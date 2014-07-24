@@ -1,0 +1,7 @@
+ALCES Output: E:\Code\import_alces_to_dss\_alces.csv
+OASIS Input: E:\Code\import_alces_to_dss\_alces.dss
+	Added /sim1/80101/ALCES//1DAY// 365 values
+	Added /sim1/80102/ALCES//1DAY// 365 values
+	Added /sim1/80103/ALCES//1DAY// 365 values
+	Added /sim1/802/ALCES//1DAY// 365 values
+	Added /sim1/803/ALCES//1DAY// 365 values
