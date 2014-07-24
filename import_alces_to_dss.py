@@ -47,7 +47,7 @@ step = 1440 # minutes per day
 log = ""
 logFilePath = os.path.normpath(sys.argv[3])
 logF = open(logFilePath, 'w')
-log += "ALCES Output: " + inFilePath + "\n"
+log += "Input: " + inFilePath + "\n"
 
 if(os.path.isfile(inFilePath)):
     # Extract all lines from the output file.
@@ -71,7 +71,7 @@ if(os.path.isfile(inFilePath)):
     
     # Prepare the dss file to be written.
     outDSS = HecDss.open(outFilePath)
-    log += "OASIS Input: " + outFilePath + "\n"
+    log += "Output: " + outFilePath + "\n"
     
     # Add a series for each ALCES output series.
     for simulation_name, series_name, series in zip(simulation_names, series_names, all_series):
@@ -86,7 +86,9 @@ if(os.path.isfile(inFilePath)):
         tsc.units = "CMS"
         tsc.type = "PER-CUM"
         outDSS.put(tsc)
-        log += "\tAdded " + tsc.fullName + " " + str(len(tsc.values)) + " values\n"
+        log += "   Added " + tsc.fullName + " (" + str(len(tsc.values)) + " values)\n"
     outDSS.close()
+else:
+    log += "ERROR: Could not find input file\n"
 logF.write(log)
 logF.close()
