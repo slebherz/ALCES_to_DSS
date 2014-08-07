@@ -12,7 +12,7 @@ import os
 
     Command Format:
     [Path to HEC-DSSVue exe] [Path to .py script] 
-        [Path to ALCES output .csv] [Path to ALCES output .dss] [Path to log .txt]
+        [Path to ALCES output .csv] [Path to ALCES output .dss] [Path to log .txt] [ALCES Simulation Name]
 
     Input File Format:
     ,<SIM_NAME>,...,<SIM_NAME>
@@ -46,25 +46,26 @@ step = 1440 # minutes per day
 # Initialize a log file.
 log = ""
 logFilePath = os.path.normpath(sys.argv[3])
-logF = open(logFilePath, 'w')
+logF = open(logFilePath, 'a')
 log += "Input: " + inFilePath + "\n"
+
+alcesSimulationName = sys.argv[4]
 
 if(os.path.isfile(inFilePath)):
     # Extract all lines from the output file.
     lines = [line.strip().split(',') for line in open(inFilePath, 'r') if len(line.strip()) > 0]
-    # Extract the header lines (the [1:] is to ignore the timestep # column).
-    simulation_names = lines[0][1:]
-    series_names = lines[1][1:]
+    # Extract the header line (the [1:] is to ignore the timestep # column).
+    seriesNames = [name.strip('"') for name in lines[0][1:]]
     # Initialize an empty list to store each series.
-    all_series = [[] for i in range(0,len(series_names))]
+    allSeries = [[] for i in range(0,len(seriesNames))]
     # The times will be shared among all the series.
     times = []
     
     # Each line contains a value for each series at a single timestep.
     # Add each value to a list of values for each series.
-    for line in lines[2:]: # [2:] ignores two header rows
+    for line in lines[1:]: # [1:] ignores one header row
         for idx, value in enumerate(line[1:]): # [1:] ignores the timestep # column
-            all_series[idx].append(float(value))
+            allSeries[idx].append(float(value))
         # While parsing through the input we may as well build a list of times.
         times.append(start.value())
         start.add(step)
@@ -74,11 +75,11 @@ if(os.path.isfile(inFilePath)):
     log += "Output: " + outFilePath + "\n"
     
     # Add a series for each ALCES output series.
-    for simulation_name, series_name, series in zip(simulation_names, series_names, all_series):
+    for series_name, series in zip(seriesNames, allSeries):
         # Build and initialize the HEC-DSS object that stores the series.
         tsc = TimeSeriesContainer()
-        # Full DSS Path: /[Sim Name]/[Series Name]/ALCES//1DAY
-        tsc.fullName = "/" + simulation_name + "/" + series_name + "/ALCES//1DAY//"
+        # Full DSS Path: //[Series Name]/ALCES//1DAY/[Sim Name]
+        tsc.fullName = "//" + series_name + "/ALCES//1DAY/" + alcesSimulationName + "/"
         tsc.interval = step
         tsc.times = times
         tsc.values = series
