@@ -78,8 +78,8 @@ if(os.path.isfile(inFilePath)):
     for series_name, series in zip(seriesNames, allSeries):
         # Build and initialize the HEC-DSS object that stores the series.
         tsc = TimeSeriesContainer()
-        # Full DSS Path: //[Series Name]/ALCES//1DAY/[Sim Name]
-        tsc.fullName = "//" + series_name + "/ALCES//1DAY/" + alcesSimulationName + "/"
+        # Full DSS Path: //[Series Name]/[Sim Name]//1DAY//
+        tsc.fullName = "//" + series_name + "/" + alcesSimulationName + "//1DAY//"
         tsc.interval = step
         tsc.times = times
         tsc.values = series
